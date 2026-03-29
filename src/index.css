@@ -1,0 +1,18 @@
+@import "tailwindcss";
+
+/* 기본 초기화 */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* 기본 폰트 */
+body {
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+/* root 스타일 */
+#root {
+  min-height: 100vh;
+}
