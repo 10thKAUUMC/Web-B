@@ -1,0 +1,145 @@
+import { useEffect } from 'react';
+import { useParams } from 'react-router-dom';
+import { LoadingSpinner } from '../components/LoadingSpinner';
+import { useCustomFetch } from '../hooks/useCustomFetch';
+import type { MovieDetails, CreditsResponse } from '../types/movie';
+
+const MovieDetailPage = () => {
+  const { movieId } = useParams<{ movieId: string }>();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [movieId]);
+
+  const { data: movie, isPending: isMoviePending, isError: isMovieError } = useCustomFetch<MovieDetails>(
+    movieId ? `https://api.themoviedb.org/3/movie/${movieId}?language=ko-KR` : ''
+  );
+
+  const { data: credits, isPending: isCreditsPending, isError: isCreditsError } = useCustomFetch<CreditsResponse>(
+    movieId ? `https://api.themoviedb.org/3/movie/${movieId}/credits?language=ko-KR` : ''
+  );
+
+  const isPending = isMoviePending || isCreditsPending;
+  const isError = isMovieError || isCreditsError;
+
+  if (isError) {
+    return (
+      <div className='p-10 flex justify-center items-center h-screen bg-black text-white'>
+        <span className='text-red-500 text-2xl font-bold'>에러가 발생했습니다.</span>
+      </div>
+    );
+  }
+
+  if (isPending || !movie || !credits) {
+    return (
+      <div className='p-10 flex justify-center items-center h-screen bg-black'>
+        <LoadingSpinner />
+      </div>
+    );
+  }
+
+  const backdropUrl = movie.backdrop_path
+    ? `https://image.tmdb.org/t/p/original${movie.backdrop_path}`
+    : '';
+
+  const releaseYear = movie.release_date.split('-')[0];
+
+  return (
+    <div className='min-h-screen bg-black text-white'>
+      <div className='relative w-full h-[600px]'>
+        <img
+          src={backdropUrl}
+          alt={movie.title}
+          className='absolute inset-0 w-full h-full object-cover'
+        />
+
+        <div className='absolute inset-0 bg-gradient-to-r from-black via-black/70 to-transparent' />
+        <div className='absolute inset-0 bg-gradient-to-b from-transparent to-black/50' />
+
+        <div className='relative z-10 max-w-7xl mx-auto px-16 pt-[120px] h-full'>
+          <div className='max-w-3xl'>
+            <h1 className='text-6xl font-extrabold mb-6 tracking-tight'>{movie.title}</h1>
+            <div className='flex gap-3 flex-wrap mb-6'>
+              <span className='flex items-center gap-1 bg-yellow-400/20 text-yellow-300 text-sm font-semibold px-3 py-1 rounded-full border border-yellow-400/40'>
+                ★ {movie.vote_average.toFixed(1)}
+              </span>
+              <span className='flex items-center gap-1 bg-blue-400/20 text-blue-300 text-sm font-semibold px-3 py-1 rounded-full border border-blue-400/40'>
+                {releaseYear}년
+              </span>
+              <span className='flex items-center gap-1 bg-purple-400/20 text-purple-300 text-sm font-semibold px-3 py-1 rounded-full border border-purple-400/40'>
+                {movie.runtime}분
+              </span>
+            </div>
+            {movie.tagline && (
+              <p className='text-3xl italic font-semibold mb-8 text-gray-100'>
+                {movie.tagline}
+              </p>
+            )}
+            <p className='text-gray-100 leading-relaxed text-xl line-clamp-5'>
+              {movie.overview}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div className='max-w-7xl mx-auto px-16 py-16'>
+        <h2 className='text-4xl font-bold mb-12 tracking-tight'>감독/출연</h2>
+        <div className='flex gap-10 overflow-x-auto pb-6 scrollbar-hide'>
+          {credits.crew
+            .filter((c) => c.job === 'Director')
+            .map((director) => (
+              <div
+                key={director.id}
+                className='flex flex-col items-center min-w-[130px]'
+              >
+                <div className='w-32 h-32 rounded-full overflow-hidden mb-4 border-4 border-gray-700 bg-gray-800 flex items-center justify-center shadow-lg'>
+                  {director.profile_path ? (
+                    <img
+                      src={`https://image.tmdb.org/t/p/w200${director.profile_path}`}
+                      alt={director.name}
+                      className='w-full h-full object-cover'
+                    />
+                  ) : (
+                    <span className='text-gray-500 text-sm'>No Image</span>
+                  )}
+                </div>
+                <span className='font-bold text-center text-lg'>
+                  {director.name}
+                </span>
+                <span className='text-gray-400 text-base text-center mt-1'>
+                  Director
+                </span>
+              </div>
+            ))}
+
+          {credits.cast.slice(0, 20).map((actor) => (
+            <div
+              key={actor.id}
+              className='flex flex-col items-center min-w-[130px]'
+            >
+              <div className='w-32 h-32 rounded-full overflow-hidden mb-4 border-4 border-gray-700 bg-gray-800 flex items-center justify-center shadow-lg'>
+                {actor.profile_path ? (
+                  <img
+                    src={`https://image.tmdb.org/t/p/w200${actor.profile_path}`}
+                    alt={actor.name}
+                    className='w-full h-full object-cover'
+                  />
+                ) : (
+                  <span className='text-gray-500 text-sm'>No Image</span>
+                )}
+              </div>
+              <span className='font-bold text-center text-lg line-clamp-1'>
+                {actor.name}
+              </span>
+              <span className='text-gray-400 text-base text-center mt-1 line-clamp-2'>
+                {actor.character}
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default MovieDetailPage;
