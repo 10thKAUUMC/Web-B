@@ -1,48 +1,19 @@
-import { useEffect, useState } from 'react';
-import axios from 'axios';
+import { useState } from 'react';
 import { useParams } from 'react-router-dom';
-import type { Movie, MovieResponse } from '../types/movie';
 import MovieCard from '../components/MovieCard';
 import { LoadingSpinner } from '../components/LoadingSpinner';
+import { useCustomFetch } from '../hooks/useCustomFetch';
+import type { MovieResponse } from '../types/movie';
 
 export default function MoviePage() {
-  const [movies, setMovies] = useState<Movie[]>([]);
-  
-  const [isPending, setIsPending] = useState(false);
-
-  const [isError, setIsError] = useState(false);
-
   const [page, setPage] = useState(1);
-
   const { category = 'popular' } = useParams<{ category: string }>();
 
-  useEffect(() => {
-    const fetchMovies = async () => {
-      setIsPending(true);
-      setIsError(false); 
+  const { data, isPending, isError } = useCustomFetch<MovieResponse>(
+    `https://api.themoviedb.org/3/movie/${category}?language=ko-KR&page=${page}`
+  );
 
-      try {
-        const { data } = await axios.get<MovieResponse>(
-          `https://api.themoviedb.org/3/movie/${category}?language=ko-KR&page=${page}`,
-          {
-            headers: {
-              Authorization: `Bearer ${import.meta.env.VITE_TMDB_KEY}`,
-            },
-          }
-        );
-
-        setMovies(data.results);
-      } catch (error) {
-        setIsError(true);
-      } finally {
-        setIsPending(false);
-      }
-    };
-
-    if (category) {
-      fetchMovies();
-    }
-  }, [page, category]); 
+  const movies = data?.results || [];
 
   if (isError) {
     return (
@@ -60,27 +31,27 @@ export default function MoviePage() {
         </div>
       ) : (
         <>
-          <div className='grid gap-4 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6'>
-            {movies.map((movie) => (
-              <MovieCard key={movie.id} movie={movie} />
-            ))}
-          </div>
-
-          <div className='flex items-center justify-center gap-6 mt-10'>
+          <div className='flex items-center justify-center gap-6 mb-8'>
             <button
               className='bg-[#dda5e3] text-white px-6 py-3 rounded-lg shadow-md hover:bg-[#b2dab1] transition-all duration-200 disabled:bg-gray-300 disabled:cursor-not-allowed'
               onClick={() => setPage((prev) => prev - 1)}
-              disabled={page === 1} 
+              disabled={page === 1}
             >
-              이전
+              &lt;
             </button>
-            <span className='font-bold text-xl text-gray-700'>{page}</span>
+            <span className='font-bold text-lg text-gray-700'>{page} 페이지</span>
             <button
               className='bg-[#dda5e3] text-white px-6 py-3 rounded-lg shadow-md hover:bg-[#b2dab1] transition-all duration-200 disabled:bg-gray-300'
               onClick={() => setPage((prev) => prev + 1)}
             >
-              다음
+              &gt;
             </button>
+          </div>
+
+          <div className='grid gap-4 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6'>
+            {movies.map((movie) => (
+              <MovieCard key={movie.id} movie={movie} />
+            ))}
           </div>
         </>
       )}
