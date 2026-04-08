@@ -10,7 +10,7 @@ const LINKS = [
 
 export const Navbar = () => {
   return (
-    <div className='flex gap-3 p-4'>
+    <div className='flex gap-3 p-4 bg-white'>
       {LINKS.map(({ to, label }) => (
         <NavLink
           key={to}
