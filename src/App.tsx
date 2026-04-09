@@ -1,13 +1,16 @@
 import { createBrowserRouter, RouterProvider, Outlet } from 'react-router-dom';
-import MoviePage from './pages/MoviePage';
-import MovieDetailPage from './pages/MovieDetailPage';
-import { Navbar } from './components/Navbar';
+import HomePage from './pages/HomePage';
+import LoginPage from './pages/LoginPage';
+import LoginSuccessPage from './pages/LoginSuccessPage';
+import Navbar from './components/Navbar';
 
 const RootLayout = () => {
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-black flex flex-col">
       <Navbar />
-      <Outlet />
+      <div className="flex-1 flex flex-col">
+        <Outlet />
+      </div>
     </div>
   );
 };
@@ -18,12 +21,16 @@ const router = createBrowserRouter([
     element: <RootLayout />,
     children: [
       {
-        path: 'movies/:category',
-        element: <MoviePage />,
+        path: '/',
+        element: <HomePage />,
       },
       {
-        path: 'movie/:movieId',
-        element: <MovieDetailPage />,
+        path: '/login',
+        element: <LoginPage />,
+      },
+      {
+        path: '/login-success',
+        element: <LoginSuccessPage />,
       },
     ],
   },
