@@ -2,6 +2,7 @@ import { createBrowserRouter, RouterProvider, Outlet } from 'react-router-dom';
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 import LoginSuccessPage from './pages/LoginSuccessPage';
+import SignupPage from './pages/SignupPage';
 import Navbar from './components/Navbar';
 
 const RootLayout = () => {
@@ -32,6 +33,10 @@ const router = createBrowserRouter([
         path: '/login-success',
         element: <LoginSuccessPage />,
       },
+      {
+        path: '/signup',
+        element: <SignupPage />,
+      }
     ],
   },
 ]);
