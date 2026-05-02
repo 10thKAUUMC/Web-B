@@ -11,6 +11,12 @@ export interface RequestSignUpDTO {
   name: string;
 }
 
+// ✅ 회원가입
+export const postSignUp = async (data: RequestSignUpDTO) => {
+  const response = await axiosInstance.post('/users', data);
+  return response.data;
+};
+
 
 export const postSignIn = async (data: RequestSignInDTO) => {
   const response = await axiosInstance.get('/users', {
@@ -20,21 +26,21 @@ export const postSignIn = async (data: RequestSignInDTO) => {
     },
   });
 
- 
   if (response.data.length === 0) {
-    throw new Error('이메일 또는 비밀번호가 틀렸습니다.');
+    throw new Error('로그인 실패');
   }
 
-  return response.data[0]; // 로그인 성공
+
+  return {
+    status: true,
+    data: {
+      accessToken: 'fake-access-token',
+      refreshToken: 'fake-refresh-token',
+    },
+  };
 };
 
-// 그대로 유지
-export const postSignOut = async (accessToken: string) => {
+
+export const postSignOut = async () => {
   return true;
-};
-
-// 회원가입 (이미 잘됨)
-export const postSignUp = async (data: RequestSignUpDTO) => {
-  const response = await axiosInstance.post('/users', data);
-  return response.data;
 };
