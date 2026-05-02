@@ -1,59 +1,40 @@
-import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import { useForm } from '../hooks/useForm';
+import { useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { loginSchema, type LoginFormData } from '../utils/schemas';
+import { useAuth } from '../context/AuthContext';
+import { useLocalStorage } from '../hooks/useLocalStorage';
 
 export default function LoginPage() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const { login, accessToken } = useAuth();
+  const [, setUserName] = useLocalStorage<string | null>('userName', null);
 
-  const { values, errors, touched, handleChange, handleBlur } = useForm({
-    initialValues: {
-      email: '',
-      password: '',
-    },
-    validate: (values) => {
-      const newErrors: Record<string, string> = {};
-      
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!values.email) {
-        newErrors.email = '이메일을 입력해주세요!';
-      } else if (!emailRegex.test(values.email)) {
-        newErrors.email = '올바른 이메일 형식을 입력해주세요.';
-      }
+  useEffect(() => {
+    if (accessToken) {
+      navigate('/', { replace: true });
+    }
+  }, [accessToken, navigate]);
 
-      if (!values.password) {
-        newErrors.password = '비밀번호를 입력해주세요!';
-      } else if (values.password.length < 8) {
-        newErrors.password = '비밀번호는 8자 이상이어야 합니다.';
-      }
-
-      return newErrors;
-    },
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isValid },
+  } = useForm<LoginFormData>({
+    resolver: zodResolver(loginSchema),
+    mode: 'onChange',
   });
 
-  const isFormValid = 
-    values.email !== '' && 
-    values.password !== '' && 
-    Object.keys(errors).length === 0;
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!isFormValid) return;
-
+  const onSubmit = async (data: LoginFormData) => {
     try {
-      const response = await axios.post('http://localhost:8000/v1/auth/signin', {
-        email: values.email,
-        password: values.password,
-      });
+      await login({ email: data.email, password: data.password });
+      setUserName(data.email.split('@')[0]);
 
-      if (response.data.status) {
-        const { accessToken, refreshToken, name } = response.data.data;
-        
-        localStorage.setItem('accessToken', accessToken);
-        localStorage.setItem('refreshToken', refreshToken);
-        localStorage.setItem('userName', name);
-
-        navigate('/login-success');
-      }
+      const from = (location.state as any)?.location?.pathname || '/login-success';
+      navigate(from, { replace: true });
+      
     } catch (error) {
       console.error(error);
       alert('로그인에 실패했습니다. 이메일과 비밀번호를 확인해주세요.');
@@ -63,12 +44,8 @@ export default function LoginPage() {
   return (
     <div className="flex-1 flex flex-col items-center justify-center px-4 bg-black text-white">
       <div className="w-full max-w-md">
-        
         <div className="flex items-center justify-between mb-10">
-          <button 
-            onClick={() => navigate(-1)} 
-            className="text-2xl font-bold text-gray-300 hover:text-white transition-colors"
-          >
+          <button onClick={() => navigate(-1)} className="text-2xl font-bold text-gray-300 hover:text-white transition-colors">
             &lt;
           </button>
           <h1 className="text-xl font-bold">로그인</h1>
@@ -86,52 +63,36 @@ export default function LoginPage() {
           <div className="flex-1 h-px bg-gray-600"></div>
         </div>
 
-        <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
           <div>
             <input
               type="email"
-              name="email"
-              value={values.email}
-              onChange={handleChange}
-              onBlur={handleBlur}
               placeholder="이메일을 입력해주세요!"
+              {...register('email')}
               className={`w-full bg-transparent border rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-1 transition-colors ${
-                touched.email && errors.email 
-                  ? 'border-red-500 focus:border-red-500 focus:ring-red-500' 
-                  : 'border-gray-600 focus:border-pink-500 focus:ring-pink-500'
+                errors.email ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : 'border-gray-600 focus:border-pink-500 focus:ring-pink-500'
               }`}
             />
-            {touched.email && errors.email && (
-              <p className="text-red-500 text-xs mt-2 ml-1">{errors.email}</p>
-            )}
+            {errors.email && <p className="text-red-500 text-xs mt-2 ml-1">{errors.email.message}</p>}
           </div>
 
           <div>
             <input
               type="password"
-              name="password"
-              value={values.password}
-              onChange={handleChange}
-              onBlur={handleBlur}
               placeholder="비밀번호를 입력해주세요!"
+              {...register('password')}
               className={`w-full bg-transparent border rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-1 transition-colors ${
-                touched.password && errors.password 
-                  ? 'border-red-500 focus:border-red-500 focus:ring-red-500' 
-                  : 'border-gray-600 focus:border-pink-500 focus:ring-pink-500'
+                errors.password ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : 'border-gray-600 focus:border-pink-500 focus:ring-pink-500'
               }`}
             />
-            {touched.password && errors.password && (
-              <p className="text-red-500 text-xs mt-2 ml-1">{errors.password}</p>
-            )}
+            {errors.password && <p className="text-red-500 text-xs mt-2 ml-1">{errors.password.message}</p>}
           </div>
 
           <button
             type="submit"
-            disabled={!isFormValid}
+            disabled={!isValid}
             className={`w-full py-4 rounded-lg font-bold transition-colors mt-2 ${
-              isFormValid 
-                ? 'bg-pink-500 text-white hover:bg-pink-600' 
-                : 'bg-gray-800 text-gray-500 cursor-not-allowed'
+              isValid ? 'bg-pink-500 text-white hover:bg-pink-600' : 'bg-gray-800 text-gray-500 cursor-not-allowed'
             }`}
           >
             로그인

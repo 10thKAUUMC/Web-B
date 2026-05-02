@@ -1,14 +1,18 @@
 import { useNavigate } from 'react-router-dom';
+import { useLocalStorage } from '../hooks/useLocalStorage';
 
 export default function HomePage() {
   const navigate = useNavigate();
-  const userName = localStorage.getItem('userName');
-  const isLoggedIn = !!localStorage.getItem('accessToken');
+  const [userName, , removeUserName] = useLocalStorage<string | null>('userName', null);
+  const [accessToken, , removeAccessToken] = useLocalStorage<string | null>('accessToken', null);
+  const [, , removeRefreshToken] = useLocalStorage<string | null>('refreshToken', null);
+
+  const isLoggedIn = !!accessToken;
 
   const handleLogout = () => {
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('refreshToken');
-    localStorage.removeItem('userName');
+    removeAccessToken();
+    removeRefreshToken();
+    removeUserName();
     window.location.reload();
   };
 

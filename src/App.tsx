@@ -1,24 +1,16 @@
-import { createBrowserRouter, RouterProvider, Outlet } from 'react-router-dom';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import HomeLayout from './layouts/HomeLayout';
+import ProtectedLayout from './layouts/ProtectedLayout';
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 import LoginSuccessPage from './pages/LoginSuccessPage';
-import Navbar from './components/Navbar';
-
-const RootLayout = () => {
-  return (
-    <div className="min-h-screen bg-black flex flex-col">
-      <Navbar />
-      <div className="flex-1 flex flex-col">
-        <Outlet />
-      </div>
-    </div>
-  );
-};
+import SignupPage from './pages/SignupPage';
+import { AuthProvider } from './context/AuthContext';
 
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <RootLayout />,
+    element: <HomeLayout />, 
     children: [
       {
         path: '/',
@@ -29,13 +21,26 @@ const router = createBrowserRouter([
         element: <LoginPage />,
       },
       {
-        path: '/login-success',
-        element: <LoginSuccessPage />,
+        path: '/signup',
+        element: <SignupPage />,
+      },
+      {
+        element: <ProtectedLayout />, 
+        children: [
+          {
+            path: '/login-success',
+            element: <LoginSuccessPage />,
+          },
+        ],
       },
     ],
   },
 ]);
 
 export default function App() {
-  return <RouterProvider router={router} />;
+  return (
+    <AuthProvider>
+      <RouterProvider router={router} />
+    </AuthProvider>
+  );
 }
