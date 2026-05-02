@@ -1,0 +1,27 @@
+{
+  "users": [
+    {
+      "name": "a01088262498",
+      "email": "a01088262498@gmail.com",
+      "password": "seojin0403",
+      "id": "sfyJbOMO15w"
+    },
+    {
+      "email": "a01088262498@gmail.com",
+      "password": "seojin0403",
+      "id": "vnMQYSAUhn0"
+    },
+    {
+      "email": "a01088262498@gmail.com",
+      "password": "seojin0403",
+      "id": "uBBCrGEbAr0"
+    },
+    {
+      "name": "getbeat0403",
+      "email": "getbeat0403@gmail.com",
+      "password": "rugkiru0403",
+      "id": "fIEAB3f3Bb8"
+    }
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
+}
