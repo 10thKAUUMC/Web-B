@@ -4,6 +4,8 @@ import axios from 'axios';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { signupSchema, type SignupFormData } from '../utils/schemas';
+import { FiEye, FiEyeOff, FiMail, FiChevronLeft } from 'react-icons/fi';
+import { FcGoogle } from 'react-icons/fc';
 
 export default function SignupPage() {
   const navigate = useNavigate();
@@ -50,50 +52,54 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="flex-1 flex flex-col items-center justify-center px-4 bg-black text-white py-12">
+    <div className="flex-1 flex flex-col items-center justify-center px-4 bg-[#0f0f11] text-white py-12 h-full">
       <div className="w-full max-w-md">
         <div className="flex items-center justify-between mb-10">
           <button
             onClick={() => (step === 2 ? setStep(1) : navigate(-1))}
-            className="text-2xl font-bold text-gray-300 hover:text-white transition-colors"
+            className="p-2 -ml-2 text-gray-400 hover:text-white transition-colors rounded-full hover:bg-gray-800"
           >
-            &lt;
+            <FiChevronLeft size={24} />
           </button>
-          <h1 className="text-xl font-bold">회원가입</h1>
-          <div className="w-8"></div>
+          <h1 className="text-xl font-bold tracking-tight">회원가입</h1>
+          <div className="w-10"></div>
         </div>
 
         {step === 1 && (
-          <div className="flex flex-col gap-5">
-            <button className="w-full border border-gray-600 rounded-lg py-3 flex items-center justify-center gap-2 hover:bg-gray-800 transition-colors mb-2">
-              <span className="text-lg font-bold text-blue-500">G</span>
-              <span className="text-sm">구글 로그인</span>
+          <div className="flex flex-col gap-6">
+            <button className="w-full border border-gray-700 bg-[#151518] rounded-xl py-3.5 flex items-center justify-center gap-3 hover:bg-[#222226] transition-colors">
+              <FcGoogle size={22} />
+              <span className="text-sm font-semibold text-gray-200">구글로 계속하기</span>
             </button>
 
-            <div className="flex items-center gap-4 mb-2">
-              <div className="flex-1 h-px bg-gray-600"></div>
-              <span className="text-gray-400 text-sm font-semibold">OR</span>
-              <div className="flex-1 h-px bg-gray-600"></div>
+            <div className="flex items-center gap-4 my-2">
+              <div className="flex-1 h-px bg-gray-800"></div>
+              <span className="text-gray-500 text-xs font-semibold tracking-wider">OR</span>
+              <div className="flex-1 h-px bg-gray-800"></div>
             </div>
 
-            <div>
+            <div className="flex flex-col gap-2">
               <input
                 type="email"
-                placeholder="이메일을 입력해주세요!"
+                placeholder="이메일 주소를 입력해주세요"
                 {...register('email')}
-                className={`w-full bg-transparent border rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-1 transition-colors ${
-                  errors.email ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : 'border-gray-600 focus:border-pink-500 focus:ring-pink-500'
+                className={`w-full bg-[#151518] border rounded-xl px-4 py-3.5 text-sm focus:outline-none focus:ring-1 transition-all ${
+                  errors.email 
+                    ? 'border-red-500/50 focus:border-red-500 focus:ring-red-500' 
+                    : 'border-gray-800 focus:border-pink-500 focus:ring-pink-500'
                 }`}
               />
-              {errors.email && <p className="text-red-500 text-xs mt-2 ml-1">{errors.email.message}</p>}
+              {errors.email && <p className="text-red-500 text-xs ml-1">{errors.email.message}</p>}
             </div>
 
             <button
               type="button"
               onClick={handleNextStep}
               disabled={!emailValue || !!errors.email}
-              className={`w-full py-4 rounded-lg font-bold transition-colors mt-2 ${
-                emailValue && !errors.email ? 'bg-pink-500 text-white hover:bg-pink-600' : 'bg-gray-800 text-gray-500 cursor-not-allowed'
+              className={`w-full py-4 rounded-xl font-bold transition-all mt-4 ${
+                emailValue && !errors.email 
+                  ? 'bg-pink-500 text-white hover:bg-pink-600 shadow-[0_0_15px_rgba(236,72,153,0.3)]' 
+                  : 'bg-[#1f1f22] text-gray-500 cursor-not-allowed'
               }`}
             >
               다음
@@ -103,57 +109,63 @@ export default function SignupPage() {
 
         {step === 2 && (
           <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
-            <div className="flex items-center gap-2 mb-2 text-gray-300 text-sm bg-gray-900 p-3 rounded-lg border border-gray-700">
-              <span className="opacity-70">✉</span>
-              <span>{emailValue}</span>
+            <div className="flex items-center gap-3 mb-2 text-gray-300 text-sm bg-[#151518] p-4 rounded-xl border border-gray-800">
+              <FiMail className="text-pink-500" size={18} />
+              <span className="font-medium">{emailValue}</span>
             </div>
 
-            <div className="relative">
+            <div className="relative flex flex-col gap-2">
               <input
                 type={showPassword ? 'text' : 'password'}
-                placeholder="비밀번호를 입력해주세요!"
+                placeholder="비밀번호를 입력해주세요"
                 {...register('password')}
-                className={`w-full bg-transparent border rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-1 transition-colors pr-10 ${
-                  errors.password ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : 'border-gray-600 focus:border-pink-500 focus:ring-pink-500'
+                className={`w-full bg-[#151518] border rounded-xl px-4 py-3.5 text-sm focus:outline-none focus:ring-1 transition-all pr-12 ${
+                  errors.password 
+                    ? 'border-red-500/50 focus:border-red-500 focus:ring-red-500' 
+                    : 'border-gray-800 focus:border-pink-500 focus:ring-pink-500'
                 }`}
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-3 text-gray-400 hover:text-white"
+                className="absolute right-4 top-[14px] text-gray-400 hover:text-white transition-colors"
               >
-                {showPassword ? '🐵' : '🙈'}
+                {showPassword ? <FiEye size={20} /> : <FiEyeOff size={20} />}
               </button>
-              {errors.password && <p className="text-red-500 text-xs mt-2 ml-1">{errors.password.message}</p>}
+              {errors.password && <p className="text-red-500 text-xs ml-1">{errors.password.message}</p>}
             </div>
 
-            <div className="relative">
+            <div className="relative flex flex-col gap-2">
               <input
                 type={showPasswordConfirm ? 'text' : 'password'}
-                placeholder="비밀번호를 다시 한번 입력해주세요!"
+                placeholder="비밀번호를 다시 한번 입력해주세요"
                 {...register('passwordConfirm')}
-                className={`w-full bg-transparent border rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-1 transition-colors pr-10 ${
-                  errors.passwordConfirm ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : 'border-gray-600 focus:border-pink-500 focus:ring-pink-500'
+                className={`w-full bg-[#151518] border rounded-xl px-4 py-3.5 text-sm focus:outline-none focus:ring-1 transition-all pr-12 ${
+                  errors.passwordConfirm 
+                    ? 'border-red-500/50 focus:border-red-500 focus:ring-red-500' 
+                    : 'border-gray-800 focus:border-pink-500 focus:ring-pink-500'
                 }`}
               />
               <button
                 type="button"
                 onClick={() => setShowPasswordConfirm(!showPasswordConfirm)}
-                className="absolute right-3 top-3 text-gray-400 hover:text-white"
+                className="absolute right-4 top-[14px] text-gray-400 hover:text-white transition-colors"
               >
-                {showPasswordConfirm ? '🐵' : '🙈'}
+                {showPasswordConfirm ? <FiEye size={20} /> : <FiEyeOff size={20} />}
               </button>
-              {errors.passwordConfirm && <p className="text-red-500 text-xs mt-2 ml-1">{errors.passwordConfirm.message}</p>}
+              {errors.passwordConfirm && <p className="text-red-500 text-xs ml-1">{errors.passwordConfirm.message}</p>}
             </div>
 
             <button
               type="submit"
               disabled={!isValid}
-              className={`w-full py-4 rounded-lg font-bold transition-colors mt-2 ${
-                isValid ? 'bg-pink-500 text-white hover:bg-pink-600' : 'bg-gray-800 text-gray-500 cursor-not-allowed'
+              className={`w-full py-4 rounded-xl font-bold transition-all mt-4 ${
+                isValid 
+                  ? 'bg-pink-500 text-white hover:bg-pink-600 shadow-[0_0_15px_rgba(236,72,153,0.3)]' 
+                  : 'bg-[#1f1f22] text-gray-500 cursor-not-allowed'
               }`}
             >
-              다음
+              가입 완료
             </button>
           </form>
         )}

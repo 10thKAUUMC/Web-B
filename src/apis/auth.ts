@@ -20,3 +20,8 @@ export const postSignOut = async (accessToken: string) => {
   });
   return response.data;
 };
+
+export const getProtectedTest = async () => {
+  const response = await axiosInstance.get('/auth/protected');
+  return response.data;
+};
