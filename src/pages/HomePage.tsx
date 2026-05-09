@@ -1,21 +1,31 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useInView } from 'react-intersection-observer';
 import useGetLpList from '../hooks/queries/useGetLpList';
 import LpCard from '../components/LpCard';
+import { LpCardSkeleton } from '../components/Skeleton';
 import { type Lp } from '../types/lp';
 
 export default function HomePage() {
   const [order, setOrder] = useState<'desc' | 'asc'>('desc'); 
   const [search, setSearch] = useState('');
+  
+  const { 
+    data, 
+    isLoading, 
+    isError, 
+    refetch, 
+    fetchNextPage, 
+    hasNextPage, 
+    isFetchingNextPage 
+  } = useGetLpList(order, search);
 
-  const { data, isPending, isError, refetch } = useGetLpList(order, search);
+  const { ref, inView } = useInView();
 
-  if (isPending) {
-    return (
-      <div className="flex justify-center items-center h-full">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-pink-500"></div>
-      </div>
-    );
-  }
+  useEffect(() => {
+    if (inView && hasNextPage) {
+      fetchNextPage();
+    }
+  }, [inView, hasNextPage, fetchNextPage]);
 
   if (isError) {
     return (
@@ -28,8 +38,10 @@ export default function HomePage() {
     );
   }
 
+  const lpList = data?.pages.flatMap((page) => page.data) || [];
+
   return (
-    <div className="flex flex-col gap-6 max-w-[1600px] mx-auto">
+    <div className="flex flex-col gap-6 max-w-[1600px] mx-auto pb-10">
       <div className="flex justify-end px-2">
         <div className="flex border border-gray-600 rounded text-sm font-bold overflow-hidden">
           <button
@@ -53,16 +65,22 @@ export default function HomePage() {
       </div>
 
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5">
-        {data?.data?.map((lp: Lp) => (
+        {isLoading && Array.from({ length: 10 }).map((_, i) => <LpCardSkeleton key={`init-skel-${i}`} />)}
+
+        {lpList.map((lp: Lp) => (
           <LpCard key={lp.id} lp={lp} />
         ))}
+
+        {isFetchingNextPage && Array.from({ length: 5 }).map((_, i) => <LpCardSkeleton key={`next-skel-${i}`} />)}
       </div>
       
-      {data?.data?.length === 0 && (
+      {!isLoading && lpList.length === 0 && (
         <div className="text-center text-gray-500 mt-10">
           표시할 LP가 없습니다.
         </div>
       )}
+
+      <div ref={ref} className="h-10 w-full" /> 
     </div>
   );
 }

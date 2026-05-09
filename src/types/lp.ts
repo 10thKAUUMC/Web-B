@@ -56,3 +56,30 @@ export interface LpListResponse {
   nextCursor: number | null;
   hasNext: boolean;
 }
+
+// 추가할 댓글 관련 타입
+export interface CommentAuthor {
+  id: number;
+  name: string;
+  email: string;
+  bio: string | null;
+  avatar: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Comment {
+  id: number;
+  content: string;
+  lpId: number;
+  authorId: number;
+  createdAt: string;
+  updatedAt: string;
+  author: CommentAuthor;
+}
+
+export interface CommentListResponse {
+  data: Comment[];
+  nextCursor: number | null;
+  hasNext: boolean;
+}

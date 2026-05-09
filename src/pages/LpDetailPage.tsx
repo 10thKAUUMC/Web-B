@@ -1,19 +1,15 @@
+import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import useGetLpDetail from '../hooks/queries/useGetLpDetail';
-import { 
-  FiX, 
-  FiHeart, 
-  FiMoreHorizontal, 
-  FiEdit2, 
-  FiTrash2 
-} from 'react-icons/fi';
+import LpCommentSection from '../components/LpCommentSection';
+import { FiX, FiHeart, FiMoreHorizontal, FiEdit2, FiTrash2 } from 'react-icons/fi';
 import { FaHeart } from 'react-icons/fa';
-import { useState } from 'react';
 
 export default function LpDetailPage() {
   const { lpid } = useParams();
   const navigate = useNavigate();
   const lpIdNumber = Number(lpid);
+
   const { data, isPending, isError, refetch } = useGetLpDetail(lpIdNumber);
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -151,6 +147,8 @@ export default function LpDetailPage() {
           </button>
         </div>
         
+        <LpCommentSection lpId={lpIdNumber} />
+
       </div>
     </div>
   );
