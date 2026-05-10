@@ -14,7 +14,18 @@ import SignupPage from "./pages/SignupPage";
 import LPListPage from "./pages/LPListPage";
 import LPDetailPage from "./pages/LPDetailPage";
 
+import SearchPage from "./pages/SearchPage";
+import MyPage from "./pages/MyPage";
+
 import { AuthProvider } from "./context/AuthContext";
+
+const NotFound = () => {
+  return (
+    <div className="min-h-screen bg-black text-white flex items-center justify-center text-2xl">
+      404 페이지를 찾을 수 없습니다.
+    </div>
+  );
+};
 
 const router =
   createBrowserRouter([
@@ -22,49 +33,67 @@ const router =
       path: "/",
       element: <HomeLayout />,
 
+      errorElement:
+        <NotFound />,
+
       children: [
         {
           path: "/",
-          element: <HomePage />,
+          element:
+            <HomePage />,
         },
 
         {
           path: "/login",
-          element: <LoginPage />,
+          element:
+            <LoginPage />,
         },
 
         {
           path: "/signup",
-          element: <SignupPage />,
+          element:
+            <SignupPage />,
         },
 
         {
           path: "/lps",
-          element: <LPListPage />,
+          element:
+            <LPListPage />,
         },
 
         {
-          element: (
-            <ProtectedLayout />
-          ),
+          path: "/search",
+          element:
+            <SearchPage />,
+        },
+
+        {
+          element:
+            <ProtectedLayout />,
 
           children: [
             {
               path:
                 "/login-success",
 
-              element: (
-                <LoginSuccessPage />
-              ),
+              element:
+                <LoginSuccessPage />,
             },
 
             {
               path:
                 "/lp/:lpid",
 
-              element: (
-                <LPDetailPage />
-              ),
+              element:
+                <LPDetailPage />,
+            },
+
+            {
+              path:
+                "/mypage",
+
+              element:
+                <MyPage />,
             },
           ],
         },

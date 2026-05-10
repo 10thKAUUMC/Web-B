@@ -1,27 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
 import { getLpList } from "../../apis/lp";
 
-const useGetLpList = (
-  page: number,
-  sort: string
-) => {
+const useGetLpList = (sort: string = "desc") => {
   return useQuery({
-    queryKey: [
-      "lps",
-      page,
-      sort,
-    ],
-
-    queryFn: () =>
-      getLpList(),
-
-    staleTime:
-      1000 * 60 * 5,
-
-    gcTime:
-      1000 * 60 * 10,
+    
+    queryKey: ["lps", sort],
+    queryFn: () => getLpList(1, sort), 
   });
 };
 
-export default
-  useGetLpList;
+export default useGetLpList;
