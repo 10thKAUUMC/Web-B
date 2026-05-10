@@ -1,0 +1,69 @@
+{
+  "lps": [
+    {
+      "id": "1",
+      "title": "YB - 나는 나비",
+      "thumbnail": "https://picsum.photos/300/300?random=1",
+      "createdAt": "2026-05-01",
+      "likes": 10,
+      "content": "윤도현 밴드의 희망적인 메세지가 담긴 곡입니다."
+    },
+    {
+      "id": "2",
+      "title": "혁오 - TOMBOY",
+      "thumbnail": "https://picsum.photos/300/300?random=2",
+      "createdAt": "2026-05-02",
+      "likes": 20,
+      "content": "청춘의 고뇌를 담은 혁오의 대표곡입니다."
+    },
+    {
+      "id": "3",
+      "title": "DAY6 - 예뻤어",
+      "thumbnail": "https://picsum.photos/300/300?random=3",
+      "createdAt": "2026-05-03",
+      "likes": 30,
+      "content": "데이식스의 감성적인 보컬이 돋보이는 명곡입니다."
+    },
+    {
+      "id": "4",
+      "title": "NewJeans - Ditto",
+      "thumbnail": "https://picsum.photos/300/300?random=4",
+      "createdAt": "2026-05-04",
+      "likes": 50,
+      "content": "겨울 분위기가 물씬 풍기는 뉴진스의 히트곡입니다."
+    },
+    {
+      "id": "5",
+      "title": "잔나비 - 주저하는 연인들을 위해",
+      "thumbnail": "https://picsum.photos/300/300?random=5",
+      "createdAt": "2026-05-05",
+      "likes": 45,
+      "content": "레트로한 감성의 잔나비표 발라드입니다."
+    },
+    {
+      "id": "6",
+      "title": "실리카겔 - NO PAIN",
+      "thumbnail": "https://picsum.photos/300/300?random=6",
+      "createdAt": "2026-05-06",
+      "likes": 60,
+      "content": "강렬한 사운드의 사이키델릭 록입니다."
+    },
+    {
+      "id": "7",
+      "title": "백예린 - Square",
+      "thumbnail": "https://picsum.photos/300/300?random=7",
+      "createdAt": "2026-05-07",
+      "likes": 80,
+      "content": "청량한 여름 바람 같은 백예린의 대표 영어 곡입니다."
+    },
+    {
+      "id": "8",
+      "title": "아이유 - 밤편지",
+      "thumbnail": "https://picsum.photos/300/300?random=8",
+      "createdAt": "2026-05-08",
+      "likes": 100,
+      "content": "아이유만의 서정적인 가사가 아름다운 곡입니다."
+    }
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
+}
