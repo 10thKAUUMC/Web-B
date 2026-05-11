@@ -1,0 +1,199 @@
+{
+  "users": [
+    {
+      "name": "a01088262498",
+      "email": "a01088262498@gmail.com",
+      "password": "seojin0403",
+      "id": "sfyJbOMO15w"
+    },
+    {
+      "email": "a01088262498@gmail.com",
+      "password": "seojin0403",
+      "id": "vnMQYSAUhn0"
+    },
+    {
+      "email": "a01088262498@gmail.com",
+      "password": "seojin0403",
+      "id": "uBBCrGEbAr0"
+    },
+    {
+      "name": "getbeat0403",
+      "email": "getbeat0403@gmail.com",
+      "password": "rugkiru0403",
+      "id": "fIEAB3f3Bb8"
+    }
+  ],
+  "lps": [
+    {
+      "id": "1",
+      "title": "YB - 나는 나비",
+      "thumbnail": "https://picsum.photos/300/300?random=1",
+      "createdAt": "2026-05-01",
+      "likes": 10,
+      "content": "윤도현 밴드 대표곡입니다."
+    },
+    {
+      "id": "2",
+      "title": "혁오 - TOMBOY",
+      "thumbnail": "https://picsum.photos/300/300?random=2",
+      "createdAt": "2026-05-02",
+      "likes": 20,
+      "content": "혁오 대표곡"
+    },
+    {
+      "id": "3",
+      "title": "DAY6 - 예뻤어",
+      "thumbnail": "https://picsum.photos/300/300?random=3",
+      "createdAt": "2026-05-03",
+      "likes": 30,
+      "content": "데이식스 명곡"
+    },
+    {
+      "id": "4",
+      "title": "NewJeans - Ditto",
+      "thumbnail": "https://picsum.photos/300/300?random=4",
+      "createdAt": "2026-05-04",
+      "likes": 50,
+      "content": "뉴진스 인기곡"
+    },
+    {
+      "id": "5",
+      "title": "잔나비 - 주저하는 연인들을 위해",
+      "thumbnail": "https://picsum.photos/300/300?random=5",
+      "createdAt": "2026-05-05",
+      "likes": 45,
+      "content": "잔나비 감성곡"
+    },
+    {
+      "id": "6",
+      "title": "검정치마 - Antifreeze",
+      "thumbnail": "https://picsum.photos/300/300?random=6",
+      "createdAt": "2026-05-06",
+      "likes": 15,
+      "content": "인디 명반"
+    },
+    {
+      "id": "7",
+      "title": "실리카겔 - NO PAIN",
+      "thumbnail": "https://picsum.photos/300/300?random=7",
+      "createdAt": "2026-05-07",
+      "likes": 60,
+      "content": "요즘 대세 밴드"
+    },
+    {
+      "id": "8",
+      "title": "LUCY - 개화",
+      "thumbnail": "https://picsum.photos/300/300?random=8",
+      "createdAt": "2026-05-08",
+      "likes": 25,
+      "content": "청량한 바이올린 사운드"
+    },
+    {
+      "id": "9",
+      "title": "백예린 - Square",
+      "thumbnail": "https://picsum.photos/300/300?random=9",
+      "createdAt": "2026-05-10",
+      "likes": 80,
+      "content": "독보적인 음색"
+    },
+    {
+      "id": "10",
+      "title": "IVE - I AM",
+      "thumbnail": "https://picsum.photos/300/300?random=10",
+      "createdAt": "2026-05-11",
+      "likes": 55,
+      "content": "아이브 메가 히트곡"
+    },
+    {
+      "id": "11",
+      "title": "검정치마 - EVERYTHING",
+      "thumbnail": "https://picsum.photos/300/300?random=11",
+      "createdAt": "2026-05-12",
+      "likes": 42,
+      "content": "로맨틱한 무드"
+    },
+    {
+      "id": "12",
+      "title": "카더가든 - 명동콜링",
+      "thumbnail": "https://picsum.photos/300/300?random=12",
+      "createdAt": "2026-05-13",
+      "likes": 18,
+      "content": "독특한 허스키 보이스"
+    },
+    {
+      "id": "13",
+      "title": "새소년 - 난춘",
+      "thumbnail": "https://picsum.photos/300/300?random=13",
+      "createdAt": "2026-05-14",
+      "likes": 33,
+      "content": "황소윤의 카리스마"
+    },
+    {
+      "id": "14",
+      "title": "성시경 - 희재",
+      "thumbnail": "https://picsum.photos/300/300?random=14",
+      "createdAt": "2026-05-15",
+      "likes": 70,
+      "content": "가을에 어울리는 발라드"
+    },
+    {
+      "id": "15",
+      "title": "아이유 - 밤편지",
+      "thumbnail": "https://picsum.photos/300/300?random=15",
+      "createdAt": "2026-05-16",
+      "likes": 100,
+      "content": "국민 여동생의 감성"
+    },
+    {
+      "id": "16",
+      "title": "넬 - 기억을 걷는 시간",
+      "thumbnail": "https://picsum.photos/300/300?random=16",
+      "createdAt": "2026-05-17",
+      "likes": 90,
+      "content": "모던 락의 정수"
+    },
+    {
+      "id": "17",
+      "title": "Zion.T - 양화대교",
+      "thumbnail": "https://picsum.photos/300/300?random=17",
+      "createdAt": "2026-05-18",
+      "likes": 48,
+      "content": "가족을 생각하게 하는 곡"
+    },
+    {
+      "id": "18",
+      "title": "적재 - 별 보러 가자",
+      "thumbnail": "https://picsum.photos/300/300?random=18",
+      "createdAt": "2026-05-19",
+      "likes": 66,
+      "content": "기타 선율이 예쁜 곡"
+    },
+    {
+      "id": "19",
+      "title": "AKMU - 어떻게 이별까지 사랑하겠어",
+      "thumbnail": "https://picsum.photos/300/300?random=19",
+      "createdAt": "2026-05-20",
+      "likes": 86,
+      "content": "천재 남매의 발라드"
+    },
+    {
+      "id": "20",
+      "title": "방탄소년단 - Dynamite",
+      "thumbnail": "https://picsum.photos/300/300?random=20",
+      "createdAt": "2026-05-21",
+      "likes": 120,
+      "content": "빌보드 1위의 위엄"
+    },
+    {
+      "title": "적재 - 나랑같이걸을래",
+      "thumbnail": "https://picsum.photos/300/300?random=91",
+      "createdAt": "2026-05-11",
+      "likes": 3,
+      "content": "적재노래",
+      "tags": [],
+      "id": "N-cdXs-6pFc",
+      "comments": []
+    }
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
+}
