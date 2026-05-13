@@ -18,14 +18,21 @@ const MyPage = () => {
   };
 
   const handleSave = () => {
-    
+    // 🔥 1. 서버 응답을 기다리지 않고 UI(로컬 상태)를 즉시 변경 (낙관적 업데이트)
+    setName(tempName);
+    setBio(tempBio);
+    setIsModal(false);
+
+    // 🔥 2. 서버 통신 (캐시와 localStorage 로직은 useLpMutation의 onMutate에서 처리됨)
     user.update.mutate({ name: tempName, bio: tempBio }, {
       onSuccess: () => {
-        setName(tempName);
-        setBio(tempBio);
-        localStorage.setItem("userName", tempName);
-        setIsModal(false);
         alert("프로필이 업데이트 되었습니다!");
+      },
+      onError: () => {
+        // 🔥 3. 만약 서버 통신에 실패했다면 원래 상태로 롤백
+        setName(name);
+        setBio(bio);
+        alert("프로필 업데이트에 실패했습니다. 다시 시도해주세요.");
       }
     });
   };

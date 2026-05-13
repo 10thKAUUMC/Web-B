@@ -125,7 +125,7 @@
       "title": "새소년 - 난춘",
       "thumbnail": "https://picsum.photos/300/300?random=13",
       "createdAt": "2026-05-14",
-      "likes": 33,
+      "likes": 35,
       "content": "황소윤의 카리스마"
     },
     {
@@ -173,26 +173,32 @@
       "title": "AKMU - 어떻게 이별까지 사랑하겠어",
       "thumbnail": "https://picsum.photos/300/300?random=19",
       "createdAt": "2026-05-20",
-      "likes": 86,
-      "content": "천재 남매의 발라드"
+      "likes": 0,
+      "content": "천재 남매의 발라드",
+      "likedBy": []
     },
     {
       "id": "20",
       "title": "방탄소년단 - Dynamite",
       "thumbnail": "https://picsum.photos/300/300?random=20",
       "createdAt": "2026-05-21",
-      "likes": 120,
-      "content": "빌보드 1위의 위엄"
+      "likes": 0,
+      "content": "빌보드 1위의 위엄",
+      "likedBy": []
     },
     {
       "title": "적재 - 나랑같이걸을래",
       "thumbnail": "https://picsum.photos/300/300?random=91",
       "createdAt": "2026-05-11",
-      "likes": 3,
+      "likes": 2,
       "content": "적재노래",
       "tags": [],
       "id": "N-cdXs-6pFc",
-      "comments": []
+      "comments": [],
+      "likedBy": [
+        "오서진/도우",
+        "ㅕㅛ허ㅗ"
+      ]
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"
