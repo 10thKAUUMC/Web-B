@@ -4,9 +4,11 @@ import useGetLpDetail from '../hooks/queries/useGetLpDetail';
 import LpCommentSection from '../components/LpCommentSection';
 import { FiX, FiHeart, FiMoreHorizontal, FiEdit2, FiTrash2 } from 'react-icons/fi';
 import { FaHeart } from 'react-icons/fa';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
 import { deleteLp, patchLp } from '../apis/lp';
 import { uploadImage } from '../apis/upload';
+import { postLike, deleteLike } from '../apis/likes';
+import { getMyInfo } from '../apis/user';
 
 export default function LpDetailPage() {
   const { lpid } = useParams();
@@ -16,13 +18,14 @@ export default function LpDetailPage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const { data, isPending, isError, refetch } = useGetLpDetail(lpIdNumber);
+  const { data: myInfo } = useQuery({ queryKey: ['myInfo'], queryFn: getMyInfo });
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isLiked, setIsLiked] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editTitle, setEditTitle] = useState('');
   const [editContent, setEditContent] = useState('');
   const [editThumbnail, setEditThumbnail] = useState('');
+  const [editThumbnailPreview, setEditThumbnailPreview] = useState('');
   const [editTags, setEditTags] = useState<string[]>([]);
 
   const { mutate: deleteMutate } = useMutation({
@@ -38,15 +41,40 @@ export default function LpDetailPage() {
     mutationFn: () => patchLp(lpIdNumber, {
       title: editTitle,
       content: editContent,
-      thumbnail: editThumbnail || data?.thumbnail || '',
+      thumbnail: editThumbnail || (data?.thumbnail?.startsWith('blob:') ? '' : data?.thumbnail) || '',
       tags: editTags.length > 0 ? editTags : ['기본태그'],
       published: true,
     }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['lpDetail', lpIdNumber] });
+      queryClient.invalidateQueries({ queryKey: ['lp', lpIdNumber] });
       setIsEditing(false);
     },
     onError: () => alert('수정에 실패했습니다.'),
+  });
+
+  const { mutate: likeMutate, isPending: isLikePending } = useMutation({
+    mutationFn: (isCurrentlyLiked: boolean) =>
+      isCurrentlyLiked ? deleteLike(lpIdNumber) : postLike(lpIdNumber),
+    onMutate: async (isCurrentlyLiked: boolean) => {
+      await queryClient.cancelQueries({ queryKey: ['lp', lpIdNumber] });
+      const previousData = queryClient.getQueryData(['lp', lpIdNumber]);
+      queryClient.setQueryData(['lp', lpIdNumber], (old: any) => {
+        if (!old) return old;
+        const likes = old.likes || [];
+        if (isCurrentlyLiked) {
+          return { ...old, likes: likes.filter((l: any) => l.userId !== myInfo?.id) };
+        } else {
+          return { ...old, likes: [...likes, { id: Date.now(), userId: myInfo?.id, lpId: lpIdNumber }] };
+        }
+      });
+      return { previousData };
+    },
+    onError: (_err, _vars, context: any) => {
+      queryClient.setQueryData(['lp', lpIdNumber], context.previousData);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['lp', lpIdNumber] });
+    },
   });
 
   const handleDeleteClick = () => {
@@ -57,7 +85,9 @@ export default function LpDetailPage() {
   const handleEditClick = () => {
     setEditTitle(data?.title || '');
     setEditContent(data?.content || '');
-    setEditThumbnail(data?.thumbnail || '');
+    const thumb = data?.thumbnail || '';
+    setEditThumbnail(thumb.startsWith('blob:') ? '' : thumb);
+    setEditThumbnailPreview(thumb.startsWith('blob:') ? '' : thumb);
     setEditTags(data?.tags?.map((t: any) => typeof t === 'string' ? t : t.name) || []);
     setIsEditing(true);
     setIsMenuOpen(false);
@@ -66,11 +96,14 @@ export default function LpDetailPage() {
   const handleThumbnailChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      const previewUrl = URL.createObjectURL(file);
+      setEditThumbnailPreview(previewUrl);
       try {
         const url = await uploadImage(file);
         setEditThumbnail(url);
       } catch {
         alert('이미지 업로드 실패');
+        setEditThumbnailPreview(editThumbnail);
       }
     }
   };
@@ -96,11 +129,15 @@ export default function LpDetailPage() {
 
   if (!data) return null;
 
+  const isLiked = myInfo ? data.likes?.some((l: any) => l.userId === myInfo.id) : false;
+  const likesCount = data.likes?.length || 0;
+  const displayThumbnail = isEditing
+    ? (editThumbnailPreview || data.thumbnail || 'https://via.placeholder.com/600')
+    : (data.thumbnail?.startsWith('blob:') ? 'https://via.placeholder.com/600' : data.thumbnail || 'https://via.placeholder.com/600');
+
   return (
     <div className="max-w-4xl mx-auto w-full pb-20 mt-4 md:mt-8">
       <div className="bg-[#151518] border border-[#222226] rounded-3xl p-8 sm:p-12 shadow-2xl relative">
-
-        {/* 상단 */}
         <div className="flex justify-between items-center mb-10">
           <div className="flex items-center gap-4">
             <div className="w-12 h-12 bg-gradient-to-tr from-pink-500 to-orange-400 rounded-full flex items-center justify-center shadow-lg">
@@ -135,14 +172,12 @@ export default function LpDetailPage() {
           </div>
         </div>
 
-        {/* 제목 */}
         {isEditing ? (
           <input value={editTitle} onChange={(e) => setEditTitle(e.target.value)} className="w-full text-3xl font-extrabold text-white mb-6 bg-[#1a1a1e] border border-[#333] rounded-lg px-4 py-3 focus:outline-none focus:border-pink-500 text-center" />
         ) : (
           <h1 className="text-3xl sm:text-4xl font-extrabold text-white mb-16 text-center leading-tight">{data.title}</h1>
         )}
 
-        {/* LP 판 */}
         <div className="flex justify-center mb-16 relative">
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-pink-500/20 blur-[80px] rounded-full pointer-events-none"></div>
           <div className="relative w-64 h-64 sm:w-80 sm:h-80">
@@ -150,7 +185,7 @@ export default function LpDetailPage() {
               onClick={() => isEditing && fileInputRef.current?.click()}
               className={`w-full h-full rounded-full overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.8)] bg-[#0a0a0a] group ${!isEditing ? 'animate-[spin_12s_linear_infinite]' : 'cursor-pointer'}`}
             >
-              <img src={editThumbnail || data.thumbnail || 'https://via.placeholder.com/600'} alt={data.title} className="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity duration-300" />
+              <img src={displayThumbnail} alt={data.title} className="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity duration-300" />
               {isEditing && (
                 <div className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity rounded-full">
                   <span className="text-white text-sm font-bold">사진 변경</span>
@@ -167,7 +202,6 @@ export default function LpDetailPage() {
           <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleThumbnailChange} />
         </div>
 
-        {/* 내용 */}
         {isEditing ? (
           <textarea value={editContent} onChange={(e) => setEditContent(e.target.value)} rows={4} className="w-full max-w-2xl mx-auto block mb-6 bg-[#1a1a1e] border border-[#333] text-white rounded-lg px-4 py-3 focus:outline-none focus:border-pink-500 resize-none" />
         ) : (
@@ -176,7 +210,6 @@ export default function LpDetailPage() {
           </div>
         )}
 
-        {/* 수정 저장/취소 버튼 */}
         {isEditing && (
           <div className="flex gap-3 justify-center mb-8">
             <button onClick={() => setIsEditing(false)} className="px-6 py-2 bg-[#2a2a2d] text-white rounded-lg hover:bg-[#3a3a3d] transition-colors">취소</button>
@@ -184,7 +217,6 @@ export default function LpDetailPage() {
           </div>
         )}
 
-        {/* 태그 */}
         <div className="flex flex-wrap justify-center gap-2 mb-12">
           {data?.tags?.map((tag: any, index: number) => (
             <span key={tag?.id || index} className="px-4 py-1.5 bg-[#2a2a2d] text-gray-300 rounded-full text-sm font-semibold hover:bg-[#333338] hover:text-white transition-colors cursor-default">
@@ -193,11 +225,14 @@ export default function LpDetailPage() {
           ))}
         </div>
 
-        {/* 좋아요 */}
         <div className="flex justify-center border-t border-[#222226] pt-10">
-          <button onClick={() => setIsLiked(!isLiked)} className="flex items-center gap-2 transition-all transform active:scale-95 text-gray-300 hover:text-white">
+          <button
+            onClick={() => !isLikePending && likeMutate(isLiked)}
+            disabled={isLikePending}
+            className="flex items-center gap-2 transition-all transform active:scale-95 text-gray-300 hover:text-white disabled:opacity-50"
+          >
             {isLiked ? <FaHeart size={26} className="text-red-500" /> : <FiHeart size={26} />}
-            <span className="font-bold text-xl ml-1">{Number(data.likes?.length || 0) + (isLiked ? 1 : 0)}</span>
+            <span className="font-bold text-xl ml-1">{likesCount}</span>
           </button>
         </div>
 

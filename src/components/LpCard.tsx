@@ -20,14 +20,19 @@ const timeAgo = (dateString: string) => {
   return `${diffDays} days ago`;
 };
 
+const PLACEHOLDER = 'https://via.placeholder.com/400';
+
 export default function LpCard({ lp }: LpCardProps) {
   const navigate = useNavigate();
   const [isImageLoaded, setIsImageLoaded] = useState(false);
 
+  const thumbnail = lp.thumbnail?.startsWith('blob:') ? PLACEHOLDER : (lp.thumbnail || PLACEHOLDER);
+
   return (
     <div
       onClick={() => navigate(`/lp/${lp.id}`)}
-      className="group relative aspect-square cursor-pointer bg-[#121212] overflow-hidden transition-transform duration-300 hover:scale-105 hover:z-20 hover:shadow-[0_10px_30px_rgba(0,0,0,0.8)]"
+      className="group relative aspect-square cursor-pointer bg-[#121212] overflow-hidden transition-transform duration-300 hover:scale-105 hover:z-20 hover:shadow-[0_10px_30px_rgba(0,0,0,0.8)] will-change-transform"
+      style={{ transform: 'translateZ(0)' }}
     >
       {!isImageLoaded && (
         <div className="absolute inset-0 z-10">
@@ -36,7 +41,7 @@ export default function LpCard({ lp }: LpCardProps) {
       )}
 
       <img
-        src={lp.thumbnail || 'https://via.placeholder.com/400'}
+        src={thumbnail}
         alt={lp.title}
         onLoad={() => setIsImageLoaded(true)}
         className={`w-full h-full object-cover transition-opacity duration-500 ${

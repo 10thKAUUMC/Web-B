@@ -10,5 +10,5 @@ export const uploadImage = async (file: File): Promise<string> => {
     },
   });
 
-  return response.data.data;
+  return response.data.data.imageUrl;
 };

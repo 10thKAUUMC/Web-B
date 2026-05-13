@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { LuMenu, LuSearch, LuUser } from 'react-icons/lu';
@@ -16,8 +16,43 @@ export default function HomeLayout() {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [, , removeAccessToken] = useLocalStorage<string | null>('accessToken', null);
   const [, , removeRefreshToken] = useLocalStorage<string | null>('refreshToken', null);
-  const userName = localStorage.getItem('userName') || '회원';
+  const [userName, setUserName] = useState(() => {
+    try {
+      const item = localStorage.getItem('userName');
+      return item ? JSON.parse(item) : '회원';
+    } catch {
+      return '회원';
+    }
+  });
+
   const toggleSidebar = () => setIsSidebarOpen((prev) => !prev);
+
+  useEffect(() => {
+    const handleStorageChange = () => {
+      try {
+        const item = localStorage.getItem('userName');
+        setUserName(item ? JSON.parse(item) : '회원');
+      } catch {
+        setUserName('회원');
+      }
+    };
+    window.addEventListener('storage', handleStorageChange);
+
+    const interval = setInterval(() => {
+      try {
+        const item = localStorage.getItem('userName');
+        const name = item ? JSON.parse(item) : '회원';
+        setUserName(name);
+      } catch {
+        setUserName('회원');
+      }
+    }, 500);
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      clearInterval(interval);
+    };
+  }, []);
 
   const { mutate: deleteMutate, isPending: isDeleting } = useMutation({
     mutationFn: deleteMyAccount,
