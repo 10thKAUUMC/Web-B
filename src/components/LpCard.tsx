@@ -27,7 +27,7 @@ export default function LpCard({ lp }: LpCardProps) {
   return (
     <div
       onClick={() => navigate(`/lp/${lp.id}`)}
-      className="group relative aspect-square cursor-pointer bg-[#121212] transition-transform duration-300 hover:scale-110 hover:z-20 hover:shadow-[0_10px_30px_rgba(0,0,0,0.8)]"
+      className="group relative aspect-square cursor-pointer bg-[#121212] overflow-hidden transition-transform duration-300 hover:scale-105 hover:z-20 hover:shadow-[0_10px_30px_rgba(0,0,0,0.8)]"
     >
       {!isImageLoaded && (
         <div className="absolute inset-0 z-10">
@@ -35,21 +35,20 @@ export default function LpCard({ lp }: LpCardProps) {
         </div>
       )}
 
-      <img 
-        src={lp.thumbnail || 'https://via.placeholder.com/400'} 
-        alt={lp.title} 
-        onLoad={() => setIsImageLoaded(true)} // 이미지 로드 완료 시 스켈레톤 제거
+      <img
+        src={lp.thumbnail || 'https://via.placeholder.com/400'}
+        alt={lp.title}
+        onLoad={() => setIsImageLoaded(true)}
         className={`w-full h-full object-cover transition-opacity duration-500 ${
           isImageLoaded ? 'opacity-100' : 'opacity-0'
         }`}
       />
-      
+
       {isImageLoaded && (
         <div className="absolute inset-0 bg-black/60 backdrop-blur-[2px] opacity-0 group-hover:opacity-100 transition-all duration-300 flex flex-col justify-end p-6">
           <h3 className="text-white font-bold text-lg leading-snug line-clamp-4 mb-4">
             {lp.title}
           </h3>
-          
           <div className="flex justify-between items-center">
             <span className="text-gray-200 text-sm font-medium">
               {timeAgo(lp.createdAt)}

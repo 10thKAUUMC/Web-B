@@ -5,7 +5,7 @@ export default function LoginSuccessPage() {
   const userName = localStorage.getItem('userName') || '회원';
 
   return (
-    <div className="flex-1 flex flex-col items-center justify-center px-4 bg-black text-white">
+    <div className="min-h-full flex flex-col items-center justify-center px-4 bg-[#0f0f11] text-white">
       <div className="w-full max-w-md flex flex-col items-center">
         <h1 className="text-3xl font-bold mb-4 text-pink-500">로그인 완료</h1>
         <p className="text-lg mb-10">{userName}님, 환영합니다!</p>

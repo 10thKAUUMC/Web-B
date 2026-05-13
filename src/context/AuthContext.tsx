@@ -1,5 +1,4 @@
-import { createContext, useContext, type ReactNode } from 'react';
-import { useLocalStorage } from '../hooks/useLocalStorage';
+import { createContext, useContext, type ReactNode, useEffect, useState } from 'react';
 import { postSignIn, postSignOut, type RequestSignInDTO } from '../apis/auth';
 import { ACCESS_TOKEN_KEY, REFRESH_TOKEN_KEY } from '../constants/key';
 
@@ -13,36 +12,66 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [accessToken, setAccessTokenToStorage, removeAccessTokenFromStorage] = 
-    useLocalStorage<string | null>(ACCESS_TOKEN_KEY, null);
-  const [refreshToken, setRefreshTokenToStorage, removeRefreshTokenFromStorage] = 
-    useLocalStorage<string | null>(REFRESH_TOKEN_KEY, null);
+  const [accessToken, setAccessToken] = useState<string | null>(() => {
+    try {
+      const item = localStorage.getItem(ACCESS_TOKEN_KEY);
+      return item ? JSON.parse(item) : null;
+    } catch {
+      return null;
+    }
+  });
+
+  const [refreshToken, setRefreshToken] = useState<string | null>(() => {
+    try {
+      const item = localStorage.getItem(REFRESH_TOKEN_KEY);
+      return item ? JSON.parse(item) : null;
+    } catch {
+      return null;
+    }
+  });
+
+  useEffect(() => {
+    const handleStorageChange = () => {
+      try {
+        const item = localStorage.getItem(ACCESS_TOKEN_KEY);
+        setAccessToken(item ? JSON.parse(item) : null);
+      } catch {
+        setAccessToken(null);
+      }
+    };
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
 
   const login = async (signInData: RequestSignInDTO) => {
     try {
       const result = await postSignIn(signInData);
       if (result.status) {
-        setAccessTokenToStorage(result.data.accessToken);
-        setRefreshTokenToStorage(result.data.refreshToken);
+        const newAccessToken = result.data.accessToken;
+        const newRefreshToken = result.data.refreshToken;
+        localStorage.setItem(ACCESS_TOKEN_KEY, JSON.stringify(newAccessToken));
+        localStorage.setItem(REFRESH_TOKEN_KEY, JSON.stringify(newRefreshToken));
+        setAccessToken(newAccessToken);
+        setRefreshToken(newRefreshToken);
       }
     } catch (error) {
-      console.error("로그인 에러:", error);
+      console.error('로그인 에러:', error);
       throw error;
     }
   };
 
   const logout = async () => {
     try {
-      if (accessToken) {
-        await postSignOut(accessToken);
-      }
+      await postSignOut();
     } catch (error) {
-      console.error("로그아웃 에러:", error);
+      console.error('로그아웃 에러:', error);
     } finally {
-      removeAccessTokenFromStorage();
-      removeRefreshTokenFromStorage();
+      localStorage.removeItem(ACCESS_TOKEN_KEY);
+      localStorage.removeItem(REFRESH_TOKEN_KEY);
       localStorage.removeItem('userName');
-      window.location.href = '/login'; 
+      setAccessToken(null);
+      setRefreshToken(null);
+      window.location.href = '/login';
     }
   };
 

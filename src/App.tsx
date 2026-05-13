@@ -9,6 +9,7 @@ import LoginSuccessPage from './pages/LoginSuccessPage';
 import SignupPage from './pages/SignupPage';
 import GoogleLoginRedirectPage from './pages/GoogleLoginRedirectPage';
 import LpDetailPage from './pages/LpDetailPage';
+import MyPage from './pages/MyPage';
 import { AuthProvider } from './context/AuthContext';
 
 const queryClient = new QueryClient({
@@ -42,7 +43,11 @@ const router = createBrowserRouter([
         element: <GoogleLoginRedirectPage />,
       },
       {
-        element: <ProtectedLayout />, 
+        path: '/v1/auth/google/callback',
+        element: <GoogleLoginRedirectPage />,
+      },
+      {
+        element: <ProtectedLayout />,
         children: [
           {
             path: '/login-success',
@@ -51,6 +56,10 @@ const router = createBrowserRouter([
           {
             path: '/lp/:lpid',
             element: <LpDetailPage />,
+          },
+          {
+            path: '/my',
+            element: <MyPage />,
           },
         ],
       },

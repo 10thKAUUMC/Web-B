@@ -1,12 +1,7 @@
 import { useEffect } from 'react';
-import { useLocalStorage } from '../hooks/useLocalStorage';
 import { ACCESS_TOKEN_KEY, REFRESH_TOKEN_KEY } from '../constants/key';
 
 const GoogleLoginRedirectPage = () => {
-  const [, setAccessToken] = useLocalStorage<string | null>(ACCESS_TOKEN_KEY, null);
-  const [, setRefreshToken] = useLocalStorage<string | null>(REFRESH_TOKEN_KEY, null);
-  const [, setUserName] = useLocalStorage<string | null>('userName', null);
-
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const accessToken = urlParams.get('accessToken');
@@ -14,16 +9,15 @@ const GoogleLoginRedirectPage = () => {
     const name = urlParams.get('name');
 
     if (accessToken && refreshToken) {
-      setAccessToken(accessToken);
-      setRefreshToken(refreshToken);
-      if (name) setUserName(name);
-
+      localStorage.setItem(ACCESS_TOKEN_KEY, JSON.stringify(accessToken));
+      localStorage.setItem(REFRESH_TOKEN_KEY, JSON.stringify(refreshToken));
+      if (name) localStorage.setItem('userName', JSON.stringify(name));
       window.location.href = '/login-success';
     } else {
       alert('구글 로그인에 실패했습니다.');
       window.location.href = '/login';
     }
-  }, [setAccessToken, setRefreshToken, setUserName]);
+  }, []);
 
   return (
     <div className="min-h-screen bg-black flex items-center justify-center text-white">
