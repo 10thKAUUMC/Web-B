@@ -6,12 +6,13 @@ import LpWriteModal from '../components/LpWriteModal';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { deleteMyAccount } from '../apis/user';
 import { useLocalStorage } from '../hooks/useLocalStorage';
+import useSidebar from '../hooks/useSidebar';
 
 export default function HomeLayout() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { accessToken, logout } = useAuth();
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const { isOpen: isSidebarOpen, toggle: toggleSidebar, close: closeSidebar } = useSidebar(true);
   const [isWriteModalOpen, setIsWriteModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [, , removeAccessToken] = useLocalStorage<string | null>('accessToken', null);
@@ -24,8 +25,6 @@ export default function HomeLayout() {
       return '회원';
     }
   });
-
-  const toggleSidebar = () => setIsSidebarOpen((prev) => !prev);
 
   useEffect(() => {
     const handleStorageChange = () => {
@@ -79,7 +78,6 @@ export default function HomeLayout() {
         </div>
 
         <div className="flex items-center gap-6 text-sm font-semibold">
-          {/* ✅ 수정: navigate('/search') 추가 */}
           <button
             onClick={() => navigate('/search')}
             className="text-gray-300 hover:text-white hidden sm:block"
@@ -104,7 +102,6 @@ export default function HomeLayout() {
       <div className="flex flex-1 overflow-hidden relative">
         <aside className={`bg-[#121212] flex flex-col transition-all duration-300 overflow-hidden shrink-0 ${isSidebarOpen ? 'w-56' : 'w-0'}`}>
           <div className="flex-1 p-6 flex flex-col gap-6 mt-2 whitespace-nowrap">
-            {/* ✅ 수정: navigate('/search')로 변경 */}
             <button onClick={() => navigate('/search')} className="text-left text-gray-300 hover:text-white flex items-center gap-3 text-sm font-semibold">
               <LuSearch size={20} /> 찾기
             </button>
@@ -112,7 +109,6 @@ export default function HomeLayout() {
               <LuUser size={20} /> 마이페이지
             </button>
           </div>
-          {/* ✅ 수정: accessToken 있을 때만 탈퇴하기 표시 */}
           <div className="p-6 whitespace-nowrap">
             {accessToken && (
               <button
@@ -129,7 +125,7 @@ export default function HomeLayout() {
         </aside>
 
         {isSidebarOpen && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden top-16" onClick={() => setIsSidebarOpen(false)} />
+          <div className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden top-16" onClick={closeSidebar} />
         )}
 
         <main className="flex-1 overflow-y-auto p-4 md:p-8 bg-[#0f0f11]">
