@@ -11,6 +11,7 @@ import GoogleLoginRedirectPage from './pages/GoogleLoginRedirectPage';
 import LpDetailPage from './pages/LpDetailPage';
 import MyPage from './pages/MyPage';
 import { AuthProvider } from './context/AuthContext';
+import SearchPage from './pages/SearchPage'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -37,6 +38,10 @@ const router = createBrowserRouter([
       {
         path: '/signup',
         element: <SignupPage />,
+      },
+      {
+        path: '/search',
+        element: <SearchPage />,
       },
       {
         path: '/google-callback',

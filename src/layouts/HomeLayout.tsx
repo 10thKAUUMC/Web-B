@@ -79,7 +79,11 @@ export default function HomeLayout() {
         </div>
 
         <div className="flex items-center gap-6 text-sm font-semibold">
-          <button className="text-gray-300 hover:text-white hidden sm:block">
+          {/* ✅ 수정: navigate('/search') 추가 */}
+          <button
+            onClick={() => navigate('/search')}
+            className="text-gray-300 hover:text-white hidden sm:block"
+          >
             <LuSearch size={20} />
           </button>
 
@@ -100,23 +104,27 @@ export default function HomeLayout() {
       <div className="flex flex-1 overflow-hidden relative">
         <aside className={`bg-[#121212] flex flex-col transition-all duration-300 overflow-hidden shrink-0 ${isSidebarOpen ? 'w-56' : 'w-0'}`}>
           <div className="flex-1 p-6 flex flex-col gap-6 mt-2 whitespace-nowrap">
-            <button onClick={() => navigate('/')} className="text-left text-gray-300 hover:text-white flex items-center gap-3 text-sm font-semibold">
+            {/* ✅ 수정: navigate('/search')로 변경 */}
+            <button onClick={() => navigate('/search')} className="text-left text-gray-300 hover:text-white flex items-center gap-3 text-sm font-semibold">
               <LuSearch size={20} /> 찾기
             </button>
             <button onClick={() => navigate('/my')} className="text-left text-gray-300 hover:text-white flex items-center gap-3 text-sm font-semibold">
               <LuUser size={20} /> 마이페이지
             </button>
           </div>
-          <div className="p-6 whitespace-nowrap relative z-50">
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                setIsDeleteModalOpen(true);
-              }}
-              className="text-gray-500 text-xs hover:text-red-400 transition-colors"
-            >
-              탈퇴하기
-            </button>
+          {/* ✅ 수정: accessToken 있을 때만 탈퇴하기 표시 */}
+          <div className="p-6 whitespace-nowrap">
+            {accessToken && (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsDeleteModalOpen(true);
+                }}
+                className="text-gray-500 text-xs hover:text-red-400 transition-colors"
+              >
+                탈퇴하기
+              </button>
+            )}
           </div>
         </aside>
 
