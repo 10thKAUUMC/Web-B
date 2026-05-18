@@ -3,7 +3,7 @@ import { axiosInstance } from '../../apis/axios';
 
 const fetchLpList = async ({ pageParam, queryKey }: any) => {
   const [_key, order, search] = queryKey;
-  const params: any = { order, search, limit: 12 };
+  const params: any = { order, search, limit: 6 };
   
   if (pageParam !== null) {
     params.cursor = pageParam;
