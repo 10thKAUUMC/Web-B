@@ -65,7 +65,6 @@ export default function HomeLayout() {
           }`}
         >
           <div className="flex-1 p-6 flex flex-col gap-6 mt-2 whitespace-nowrap">
-            {/* ✨ 모바일/사이드바 찾기 버튼에 navigate 추가 */}
             <button onClick={() => navigate('/search')} className="text-left text-gray-300 hover:text-white flex items-center gap-3 text-sm font-semibold">
               <LuSearch size={20} /> 찾기
             </button>

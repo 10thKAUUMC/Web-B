@@ -4,6 +4,7 @@ import useGetLpList from '../hooks/queries/useGetLpList';
 import LpCard from '../components/LpCard';
 import { LpCardSkeleton } from '../components/Skeleton';
 import { type Lp } from '../types/lp';
+import useThrottle from '../hooks/useThrottle';
 
 export default function HomePage() {
   const [order, setOrder] = useState<'desc' | 'asc'>('desc'); 
@@ -20,12 +21,14 @@ export default function HomePage() {
   } = useGetLpList(order, search);
 
   const { ref, inView } = useInView();
+  
+  const throttledInView = useThrottle(inView, 1000);
 
   useEffect(() => {
-    if (inView && hasNextPage) {
+    if (throttledInView && hasNextPage && !isFetchingNextPage) {
       fetchNextPage();
     }
-  }, [inView, hasNextPage, fetchNextPage]);
+  }, [throttledInView, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   if (isError) {
     return (
