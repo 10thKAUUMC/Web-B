@@ -6,6 +6,7 @@ import { FiX } from 'react-icons/fi';
 import LpWriteModal from '../components/LpWriteModal';
 import { useLogoutMutation, useWithdrawMutation } from '../hooks/mutations/useAuthMutations';
 import useGetMyInfo from '../hooks/queries/useGetMyInfo';
+import useSidebar from '../hooks/useSidebar'; 
 
 export default function HomeLayout() {
   const navigate = useNavigate();
@@ -13,13 +14,12 @@ export default function HomeLayout() {
   
   const { data: me } = useGetMyInfo(!!accessToken);
   
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const { isOpen: isSidebarOpen, toggle: toggleSidebar, close: closeSidebar } = useSidebar(true);
+  
   const [isWriteModalOpen, setIsWriteModalOpen] = useState(false);
   const [isWithdrawModalOpen, setIsWithdrawModalOpen] = useState(false);
   
   const userName = me?.name || localStorage.getItem('userName') || '회원';
-  
-  const toggleSidebar = () => setIsSidebarOpen((prev) => !prev);
 
   const { mutate: logoutMutate } = useLogoutMutation();
   const { mutate: withdrawMutate } = useWithdrawMutation();
@@ -84,7 +84,7 @@ export default function HomeLayout() {
         {isSidebarOpen && (
           <div 
             className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden top-16" 
-            onClick={() => setIsSidebarOpen(false)} 
+            onClick={closeSidebar} 
           />
         )}
 

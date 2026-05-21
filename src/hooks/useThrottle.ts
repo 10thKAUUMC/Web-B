@@ -12,7 +12,6 @@ function useThrottle<T>(value: T, interval: number): T {
     timerRef.current = setTimeout(() => {
       setThrottledValue(value);
       timerRef.current = null; // 실행 후 타이머 초기화
-      console.log('throttle 실행!', value); // 로그 확인
     }, interval);
 
     // 컴포넌트 언마운트 또는 의존성(value, interval) 변경 시 기존 타이머 정리
